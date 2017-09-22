@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+    <flow name="task1Flow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/task1" allowedMethods="POST" doc:name="HTTP" doc:description="1. Use Input1 json file and display all the values(abc,xc) etc using dataweave. "/>
+        <dw:transform-message metadata:id="1dd9a3da-6bc1-40cc-9a61-2374e2643ac0" doc:name="Transform Message">
+            <dw:input-payload doc:sample="C:\Users\satishchander.v\Downloads\Hands-On_1\Hands-On_1\Input1.js" mimeType="application/json"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/dw
+---
+payload map $]]></dw:set-payload>
+        </dw:transform-message>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
+</mule>

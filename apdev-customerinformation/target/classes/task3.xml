@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+    <flow name="task3Flow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/task3" allowedMethods="POST" doc:name="HTTP" doc:description="3. Use Input2 json file and display the full JSON object in just one array using dataweave"/>
+        <dw:transform-message metadata:id="187a7cbd-25d0-405f-80dc-1460e751abe2" doc:name="Transform Message">
+            <dw:input-payload doc:sample="C:\Users\satishchander.v\Desktop\MuleSoft-\Hands-On_1 (2)\Hands-On_1\Input2.js" mimeType="application/json"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+%var address1= payload.address map {
+   (address:$ -"details") 
+   }
+ %var addressemail= payload.address map {
+   (address:$ -"email") 
+   }  
+ %var addressLineDetails = payload.address.details map {
+   (details:$.addressLineDetails) 
+   } 
+%var email = payload.email map {
+   (email:$) 
+   }   
+%var address1 = [address1 ++ addressLineDetails ++ email] reduce ($$ ++ $) 
+--- 
+//flatten payload
+"address": [
+      [ {"activeInd": "Y",
+    "primaryInd": "Y",
+    "allowPromotions": "Y",
+    "addressType": "home1"},
+    {"details": {"addressLocale": "en-US"}}
+     reduce ($$ ++ $),{"addressLineDetails": {"area": "",
+          "building": "HCL Tech Office",
+          "city": "Redmond",
+          "company": "HCL","department": "",
+          "district": "",
+          "garden": "", "state": "Washington", "addressLine1": "Redmond, Bellevue",
+          "addressLine2": "","addressLine3": "", "addressLine4": "",
+          "streetType": "","suburb": "","zipCode": "98109",
+          "block": "","level": "", "unit": "",
+          "houseNumber": "",
+          "addressPreferenceTypeID": "", "streetLonNumber": "",
+          "remark": "", "latitude": "","longitude": "",  "isRedZone": "",
+          "isAmberZone": "", "landmark": "", "county": "",
+          "shortZipCode": "","country": "US"}} reduce ($$ ++ $),
+         {"activeInd": "Y","type": "personal", "primaryInd": "Y",
+ 	      "verifiedInd": "Y",
+          "verifiedDate": "2016-08-31T12:00:00.000",
+          "emailAddress": "test2@gmail.com" }
+     ] reduce ($$ ++ $)
+ ] 
+]]></dw:set-payload>
+        </dw:transform-message>
+        <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+    </flow>
+</mule>
